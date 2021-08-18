@@ -1,6 +1,6 @@
-import * as React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
 const App = (): JSX.Element => {
   return (
@@ -21,6 +21,6 @@ const App = (): JSX.Element => {
       </header>
     </div>
   );
-}
+};
 
 export default App;
