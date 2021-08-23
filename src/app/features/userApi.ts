@@ -9,4 +9,6 @@ export const postPhrase = (phrase: string): Promise =>
     body: JSON.stringify({
       phrase: phrase,
     }),
-  });
+  })
+    .then((res) => res.json())
+    .catch((error) => error);
