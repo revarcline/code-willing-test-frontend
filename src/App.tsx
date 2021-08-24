@@ -9,7 +9,7 @@ const App = (): JSX.Element => {
     <div className="App">
       <header className="App-header">
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Enter a phrase
         </p>
         <a
           className="App-link"
