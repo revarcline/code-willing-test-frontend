@@ -28,7 +28,7 @@ const initialState: PhraseState = {
 
 export const transformPhrase = createAsyncThunk(
   "phrase/tranformPhrase",
-  async (phrase: string) => {
+  async (phrase: string, thunkAPI) => {
     const response = await fetch(`${apiRoot}/api/phrases/piglatin`, {
       method: "POST",
       headers: {
@@ -37,14 +37,14 @@ export const transformPhrase = createAsyncThunk(
       body: JSON.stringify({
         phrase: phrase,
       }),
-    });
+    }).then((res) => res.json());
     if (response.status !== 200) {
       // return with error
-      return thunkApi.rejectWithValue({
+      return thunkAPI.rejectWithValue({
         message: "Phrases must contain only alphabetic characters and spaces",
       });
     }
-    return response.json() as PhraseData;
+    return response as PhraseData;
   }
 );
 
@@ -55,7 +55,7 @@ export const phraseSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(transformPhrase.pending, (state) => {
       state.status = "loading";
-      state.errors = null;
+      state.error = null;
     });
     builder.addCase(transformPhrase.fulfilled, (state, { payload }) => {
       state.phrase = payload;
@@ -64,15 +64,11 @@ export const phraseSlice = createSlice({
     builder.addCase(transformPhrase.rejected, (state, { payload }) => {
       console.log("rejected", payload);
       if (payload) {
-        state.error = payload;
+        state.error = "Phrase must include only letters and spaces";
       }
       state.status = "failed";
     });
   },
 });
-
-export const selectPhrase = (state: RootState) => {
-  return state.phrase.fullPhrase;
-};
 
 export default phraseSlice.reducer;
