@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { phrasesReducer } from "./features/phrasesSlice";
+import { phraseReducer } from "./features/phraseSlice";
 
 export const store = configureStore({
   reducer: {
-    phrases: phrasesReducer,
+    phrases: phraseReducer,
   },
 });
 

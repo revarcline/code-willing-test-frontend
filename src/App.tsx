@@ -1,10 +1,11 @@
 import * as React from "react";
-import {useState, useEffect} from 'react'
+import { useState, useEffect} from 'react'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 import "./App.css";
 import { translatePhrase } from './app/features/phrasesSlice'
 
 const App = (): JSX.Element => {
-
+  
   return (
     <div className="App">
       <header className="App-header">
