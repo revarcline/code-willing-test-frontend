@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { transform } from "typescript";
+import { RootState } from "../store";
 import { postPhrase } from "./userApi";
 
 interface PhraseData {
@@ -25,7 +27,7 @@ const initialState: PhraseState = {
   error: null,
 };
 
-export const translatePhrase = createAsyncThunk(
+export const transformPhrase = createAsyncThunk(
   "phrase/tranformPhrase",
   async (phrase: string) => {
     const response = await fetch(`${apiRoot}/api/phrases/piglatin`, {
@@ -38,9 +40,36 @@ export const translatePhrase = createAsyncThunk(
       }),
     })
       .then((res) => res.json())
-      .catch((error) => error.json().errors[0].msg);
+      .catch((error) => error.json());
     return response as PhraseData;
   }
 );
+
+export const phraseSlice = createSlice({
+  name: "phrase",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(transformPhrase.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(transformPhrase.fulfilled, (state, { payload }) => {
+      state.phrase = payload;
+      state.status = "succeeded";
+    });
+    builder.addCase(transformPhrase.rejected, (state, { payload }) => {
+      console.log("rejected", payload);
+      if (payload) {
+        state.error = payload.errors[0].msg;
+      }
+      state.status = "failed";
+    });
+  },
+});
+
+export const selectPhrase = (state: RootState) => {
+  return state.phrase.fullPhrase;
+};
 
 export default phraseSlice.reducer;
