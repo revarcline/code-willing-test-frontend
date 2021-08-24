@@ -2,9 +2,7 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import phraseReducer from "./features/phraseSlice";
 
 export const store = configureStore({
-  reducer: {
-    phrases: phraseReducer,
-  },
+  reducer: phraseReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;

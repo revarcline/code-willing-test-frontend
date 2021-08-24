@@ -1,16 +1,47 @@
 import * as React from "react";
-import { useState, useEffect} from 'react'
+import { useState } from 'react'
 import "./App.css";
 import { transformPhrase } from './app/features/phraseSlice'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 
 const App = (): JSX.Element => {
   const [phraseInput, setPhraseInput] = useState('')
 
+  const dispatch = useAppDispatch()
+
   const handlePhraseChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    ev.preventDefault();
     const alphaRegex = /^[a-zA-Z ]*$/;
     if (ev.target.value === '' || alphaRegex.test(ev.target.value)) {
       setPhraseInput(ev.target.value)
+    }
+  }
+
+  const pigLatinPhrase = useAppSelector(state => state.phrase.fullPhrase.pigLatin)
+  const phraseStatus = useAppSelector(state => state.status)
+  const phraseError = useAppSelector(state => state.error)
+
+  const handlePhraseSubmit = (ev: React.FormEvent) => {
+    ev.preventDefault();
+    dispatch(transformPhrase(phraseInput))
+  }
+
+  const handleResultsDisplay = () => {
+    if (phraseStatus === 'idle') {
+      return(
+        <div></div>
+      )
+    } else if (phraseStatus === 'succeeded') {
+      return(
+        <div>
+          <h2>{pigLatinPhrase}</h2>
+        </div>
+      )
+    } else if (phraseStatus === 'failed') {
+      return(
+        <div>
+          <h2>{phraseError}</h2>
+        </div>
+      )
     }
   }
   
@@ -32,15 +63,11 @@ const App = (): JSX.Element => {
             value={phraseInput}
             onChange={handlePhraseChange}
             />
-          <button type="submit" id="phrase-submit">Submit</button>
+          <button type="submit" id="phrase-submit" onSubmit={handlePhraseSubmit}>Submit</button>
           </div>
         </form>
       </div>
-      <div>
-        <h2>
-          Result text
-        </h2>
-      </div>
+      {handleResultsDisplay}
     </div>
   );
 };
