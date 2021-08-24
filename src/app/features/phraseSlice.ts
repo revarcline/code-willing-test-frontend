@@ -12,18 +12,7 @@ interface PhraseData {
 interface PhraseState {
   phrase: PhraseData;
   status: "idle" | "loading" | "succeeded" | "failed";
-  errors: PhraseErrors[] | null;
-}
-
-interface PhraseError {
-  value: string;
-  msg: string;
-  param: string;
-  location: string;
-}
-
-interface PhraseErrors {
-  errors: PhraseError[];
+  error: string | null;
 }
 
 const initialState: PhraseState = {
@@ -34,7 +23,7 @@ const initialState: PhraseState = {
     },
   },
   status: "idle",
-  errors: null,
+  error: null,
 };
 
 export const transformPhrase = createAsyncThunk(
@@ -48,8 +37,14 @@ export const transformPhrase = createAsyncThunk(
       body: JSON.stringify({
         phrase: phrase,
       }),
-    }).then((res) => res.json());
-    return response as PhraseData;
+    });
+    if (response.status !== 200) {
+      // return with error
+      return thunkApi.rejectWithValue({
+        message: "Phrases must contain only alphabetic characters and spaces",
+      });
+    }
+    return response.json() as PhraseData;
   }
 );
 
@@ -69,7 +64,7 @@ export const phraseSlice = createSlice({
     builder.addCase(transformPhrase.rejected, (state, { payload }) => {
       console.log("rejected", payload);
       if (payload) {
-        state.errors = payload;
+        state.error = payload;
       }
       state.status = "failed";
     });
