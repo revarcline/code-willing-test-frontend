@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect} from 'react'
 import { useAppDispatch, useAppSelector } from './app/hooks'
 import "./App.css";
-import { translatePhrase } from './app/features/phraseSlice'
+import { transformPhrase } from './app/features/phraseSlice'
 
 const App = (): JSX.Element => {
   

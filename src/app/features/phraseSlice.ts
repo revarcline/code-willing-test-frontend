@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { transform } from "typescript";
 import { RootState } from "../store";
-import { postPhrase } from "./userApi";
+import apiRoot from "../apiRoot";
 
 interface PhraseData {
   fullPhrase: {
@@ -13,7 +12,18 @@ interface PhraseData {
 interface PhraseState {
   phrase: PhraseData;
   status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+  errors: PhraseErrors[] | null;
+}
+
+interface PhraseError {
+  value: string;
+  msg: string;
+  param: string;
+  location: string;
+}
+
+interface PhraseErrors {
+  errors: PhraseError[];
 }
 
 const initialState: PhraseState = {
@@ -24,7 +34,7 @@ const initialState: PhraseState = {
     },
   },
   status: "idle",
-  error: null,
+  errors: null,
 };
 
 export const transformPhrase = createAsyncThunk(
@@ -38,9 +48,7 @@ export const transformPhrase = createAsyncThunk(
       body: JSON.stringify({
         phrase: phrase,
       }),
-    })
-      .then((res) => res.json())
-      .catch((error) => error.json());
+    }).then((res) => res.json());
     return response as PhraseData;
   }
 );
@@ -52,7 +60,7 @@ export const phraseSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(transformPhrase.pending, (state) => {
       state.status = "loading";
-      state.error = null;
+      state.errors = null;
     });
     builder.addCase(transformPhrase.fulfilled, (state, { payload }) => {
       state.phrase = payload;
@@ -61,7 +69,7 @@ export const phraseSlice = createSlice({
     builder.addCase(transformPhrase.rejected, (state, { payload }) => {
       console.log("rejected", payload);
       if (payload) {
-        state.error = payload.errors[0].msg;
+        state.errors = payload;
       }
       state.status = "failed";
     });
