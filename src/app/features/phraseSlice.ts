@@ -1,39 +1,21 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { postPhrase } from "./userApi";
-import type { RootState } from "../store";
+
+interface PhraseData {
+  fullPhrase: {
+    original: string;
+    pigLatin: string;
+  };
+  error: string;
+}
 
 export const translatePhrase = createAsyncThunk(
-  "phrases/tranformPhrase",
+  "phrase/tranformPhrase",
   async (phrase: string) => {
     const response = await postPhrase(phrase);
-    return response.json();
+    return response.json() as PhraseData;
   }
 );
-
-export const phrasesSlice = createSlice({
-  name: "phrase",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(translatePhrase.pending, (state) => {
-      state.phrase.status = "loading";
-    }),
-      builder.addCase(
-        translatePhrase.fulfilled.type,
-        (state, { payload }: PayloadAction) => {
-          state.phrase.push(payload);
-          state.phrase.status = "finished";
-        }
-      ),
-      builder.addCase(
-        translatePhrase.rejected.type,
-        (state, { payload }: PayloadAction) => {
-          state.phrase.push(payload);
-          state.phrase.status = "failed";
-        }
-      );
-  },
-});
 
 interface GenericState<T> {
   data?: T;
@@ -58,10 +40,14 @@ const createGenericSlice = <
       start(state) {
         state.status = "loading";
       },
-      /**       * If you want to write to values of the state that depend on the generic       * (in this case: `state.data`, which is T), you might need to specify the       * State type manually here, as it defaults to `Draft<GenericState<T>>`,       * which can sometimes be problematic with yet-unresolved generics.       * This is a general problem when working with immer's Draft type and generics.       */ success(
-        state: GenericState<T>,
-        action: PayloadAction<T>
-      ) {
+      /**
+       * * If you want to write to values of the state that depend on the generic
+       * * (in this case: `state.data`, which is T), you might need to specify the
+       * * State type manually here, as it defaults to `Draft<GenericState<T>>`,
+       * * which can sometimes be problematic with yet-unresolved generics.
+       * * This is a general problem when working with immer's Draft type and generics.
+       * */
+      success(state: GenericState<T>, action: PayloadAction<T>) {
         state.data = action.payload;
         state.status = "finished";
       },
@@ -69,15 +55,29 @@ const createGenericSlice = <
     },
   });
 };
-const wrappedSlice = createGenericSlice({
-  name: "test",
+const phraseSlice = createGenericSlice({
+  name: "phrase",
   initialState: { status: "loading" } as GenericState<string>,
-  reducers: {
-    magic(state) {
-      state.status = "finished";
-      state.data = "hocus pocus";
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(translatePhrase.pending, (state) => {
+      state.status = "loading";
+    }),
+      builder.addCase(
+        translatePhrase.fulfilled,
+        (state, { payload }: PayloadAction) => {
+          state.push(payload);
+          state.status = "finished";
+        }
+      ),
+      builder.addCase(
+        translatePhrase.rejected,
+        (state, { payload }: PayloadAction) => {
+          state.push(payload);
+          state.status = "failed";
+        }
+      );
   },
 });
 
-export default phrasesSlice.reducer;
+export default phraseSlice.reducer;

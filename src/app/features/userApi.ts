@@ -11,7 +11,7 @@ export const postPhrase = (phrase: string): Promise =>
     }),
   })
     .then((res) => res.json())
-    .catch((error) => error);
+    .catch((error) => error.json().errors[0].msg);
 
 /*
  * console test
@@ -29,6 +29,6 @@ const postPhrase = (phrase) =>
   })
     .then((res) => res.json())
     .then((json) => console.log(json))
-    .catch((error) => error);
+    .catch((error) => error.json().errors[0].msg);
 
 */
