@@ -38,12 +38,6 @@ export const transformPhrase = createAsyncThunk(
         phrase: phrase,
       }),
     }).then((res) => res.json());
-    if (response.status !== 200) {
-      // return with error
-      return thunkAPI.rejectWithValue({
-        message: "Phrases must contain only alphabetic characters and spaces",
-      });
-    }
     return response as PhraseData;
   }
 );

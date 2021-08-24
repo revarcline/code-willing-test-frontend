@@ -51,7 +51,7 @@ const App = (): JSX.Element => {
         Pig Latinizer
       </h1>
       <div className="App-form">
-        <form action="">
+        <form onSubmit={handlePhraseSubmit}>
           <div id='phrase-label'>
           <label htmlFor="phrase-input">enter a phrase:</label>
           </div>
@@ -63,7 +63,7 @@ const App = (): JSX.Element => {
             value={phraseInput}
             onChange={handlePhraseChange}
             />
-          <button type="submit" id="phrase-submit" onSubmit={handlePhraseSubmit}>Submit</button>
+          <button type="submit" id="phrase-submit">Submit</button>
           </div>
         </form>
       </div>
