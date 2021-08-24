@@ -64,7 +64,7 @@ export const phraseSlice = createSlice({
     builder.addCase(transformPhrase.rejected, (state, { payload }) => {
       console.log("rejected", payload);
       if (payload) {
-        state.error = "Phrase must include only letters and spaces";
+        state.error = "Something went wrong";
       }
       state.status = "failed";
     });

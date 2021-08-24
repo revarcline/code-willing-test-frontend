@@ -1,8 +1,8 @@
-.App {
-  text-align: center;
-}
+@import url("https://fonts.googleapis.com/css2?family=Overpass&display=swap");
 
-.App-header {
+.App {
+  font-family: Overpass, sans-serif;
+  text-align: center;
   background-color: DarkSlateBlue;
   background-image: linear-gradient(
     to bottom right,
@@ -16,6 +16,30 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+#phrase-label {
+  margin-bottom: 1em;
+}
+
+#phrase-input {
+  font-family: Overpass, sans-serif;
+  text-align: center;
+  border: none;
+  border-radius: 8px;
+  padding: 1em;
+  font-size: calc(10px + 2vmin);
+}
+
+#phrase-submit {
+  font-family: Overpass, sans-serif;
+  border: none;
+  color: white;
+  background-color: DarkSlateBlue;
+  padding: 1em;
+  text-align: center;
+  font-size: calc(10px + 2vmin);
+  border-radius: 8px;
 }
 
 .App-link {
