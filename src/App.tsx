@@ -22,33 +22,29 @@ const App = (): JSX.Element => {
 
   const handlePhraseSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
+    if ( phraseInput !== '' ) {
     dispatch(transformPhrase(phraseInput))
+    }
   }
 
   const handleResultsDisplay = () => {
-    if (phraseStatus === 'idle') {
-      return(
-        <div></div>
-      )
-    } else if (phraseStatus === 'succeeded') {
-      return(
-        <div>
-          <h2>{pigLatinPhrase}</h2>
-        </div>
-      )
+    let output = 'Pig Latinizer'
+    if (phraseStatus === 'succeeded') {
+      output = pigLatinPhrase
     } else if (phraseStatus === 'failed') {
+      output = phraseError
+    }
       return(
         <div>
-          <h2>{phraseError}</h2>
+          <h2>{output}</h2>
         </div>
       )
-    }
   }
   
   return (
     <div className="App">
       <h1>
-        Pig Latinizer
+          {handleResultsDisplay()}
       </h1>
       <div className="App-form">
         <form onSubmit={handlePhraseSubmit}>
@@ -56,6 +52,7 @@ const App = (): JSX.Element => {
           <label htmlFor="phrase-input">enter a phrase:</label>
           </div>
           <div id="phrase-form">
+            <div>
           <input
             type="text"
             id="phrase-input"
@@ -63,11 +60,13 @@ const App = (): JSX.Element => {
             value={phraseInput}
             onChange={handlePhraseChange}
             />
+            </div>
+            <div>
           <button type="submit" id="phrase-submit">Submit</button>
+            </div>
           </div>
         </form>
-      </div>
-      {handleResultsDisplay}
+        </div>
     </div>
   );
 };

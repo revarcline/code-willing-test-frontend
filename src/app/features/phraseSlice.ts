@@ -12,7 +12,7 @@ interface PhraseData {
 interface PhraseState {
   phrase: PhraseData;
   status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+  error: string;
 }
 
 const initialState: PhraseState = {
@@ -23,12 +23,12 @@ const initialState: PhraseState = {
     },
   },
   status: "idle",
-  error: null,
+  error: "",
 };
 
 export const transformPhrase = createAsyncThunk(
   "phrase/tranformPhrase",
-  async (phrase: string, thunkAPI) => {
+  async (phrase: string) => {
     const response = await fetch(`${apiRoot}/api/phrases/piglatin`, {
       method: "POST",
       headers: {
@@ -49,7 +49,7 @@ export const phraseSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(transformPhrase.pending, (state) => {
       state.status = "loading";
-      state.error = null;
+      state.error = "";
     });
     builder.addCase(transformPhrase.fulfilled, (state, { payload }) => {
       state.phrase = payload;
